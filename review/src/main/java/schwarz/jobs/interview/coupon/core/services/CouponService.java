@@ -17,6 +17,7 @@ import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
 @RequiredArgsConstructor
 public class CouponService {
 
+
     private final CouponRepository couponRepository;
 
     public Optional<Coupon> getCoupon(final String code) {

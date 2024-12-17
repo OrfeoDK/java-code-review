@@ -32,6 +32,7 @@ public class CouponResource {
 
     private final CouponService couponService;
 
+
     /**
      * @param applicationRequestDTO Provides the necessary basket and customer information required for the coupon application
      * @return ResponseEntity containing the updated Basket if the coupon application is successful, or an appropriate HTTP status if it fails.

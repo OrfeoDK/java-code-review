@@ -35,6 +35,7 @@ public class CouponServiceTest {
     @Test
     public void createCoupon() {
         // Test description: This test verifies that the createCoupon method in couponService correctly saves a new coupon.
+
         CouponDTO dto = CouponDTO.builder()
                 .code("12345")
                 .discount(BigDecimal.TEN)
@@ -49,6 +50,7 @@ public class CouponServiceTest {
     @Test
     public void test_apply_coupon_method() {
         // Test description: This test verifies the apply method of couponService with different basket values.
+
         final Basket firstBasket = Basket.builder()
                 .value(BigDecimal.valueOf(100))
                 .build();
@@ -88,6 +90,7 @@ public class CouponServiceTest {
     @Test
     public void should_test_get_Coupons() {
         // Test description: This test verifies that the getCoupons method returns the correct coupons based on the provided codes.
+
         CouponRequestDTO dto = CouponRequestDTO.builder()
                 .codes(List.of("1111", "1234"))
                 .build();

@@ -1,7 +1,7 @@
 # Coupon project code review
 
 ## General annotations
-* Refactored model.basket to have the same level of depth as the other core segments.
+* Refactored 'model.basket' to have the same level of depth as the other core segments.
 * Erased debug print message.
 * The understanding of the code would benefit from using more comments and explanations about what has been implemented and the different functionalities of the project.
 
