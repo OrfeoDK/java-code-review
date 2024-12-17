@@ -8,7 +8,6 @@
 ## Code changes
 
 ### Basket.java
-* initialized appliedDiscount to BigDecimal.ZERO to avoid problems with potential null.
 * 'applyDiscount' now throws an IllegalArgumentException when discount is null.
     * Also, applicationSuccessful is turned to true when applying the discount from a coupon on the current basket successfully.
 
@@ -19,6 +18,7 @@
 * 'getCoupons' now uses streams for greater clarity. Also, it now handles the potential empty Optional values to avoid exceptions.
 
 ### CouponResource.java
+* Added/expanded a comment for each one of the methods implemented.
 * 'apply' now uses 'basket' instead of 'applicationRequestDTO.getBasket()' to check if the application was successful.
     * Also, improved and incorporated new informative messages about the process and errors occurred.
 * '/create' now returns an HTTP 201 Created response with the location of the newly created resource when the creation of the coupon goes as expected.

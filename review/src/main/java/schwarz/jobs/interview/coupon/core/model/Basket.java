@@ -14,7 +14,7 @@ public class Basket {
     @NotNull
     private BigDecimal value;
 
-    private BigDecimal appliedDiscount = BigDecimal.ZERO;
+    private BigDecimal appliedDiscount;
 
     private boolean applicationSuccessful;
 

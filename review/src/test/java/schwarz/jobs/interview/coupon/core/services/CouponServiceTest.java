@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,9 +81,7 @@ public class CouponServiceTest {
                 .value(BigDecimal.valueOf(-1))
                 .build();
 
-        assertThatThrownBy(() -> {
-            couponService.apply(thirdBasket, "1111");
-        }).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> couponService.apply(thirdBasket, "1111")).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Can't apply negative discounts");
     }
 

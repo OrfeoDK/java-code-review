@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,10 +33,10 @@ public class CouponResource {
     private final CouponService couponService;
 
     /**
-     * @param applicationRequestDTO
-     * @return
+     * @param applicationRequestDTO Provides the necessary basket and customer information required for the coupon application
+     * @return ResponseEntity containing the updated Basket if the coupon application is successful, or an appropriate HTTP status if it fails.
      */
-    //@ApiOperation(value = "Applies currently active promotions and coupons from the request to the requested Basket - Version 1")
+    //@ApiOperation(value = "Applies currently active promotions and coupons from the request to the requested Basket - Version 2")
     @PostMapping(value = "/apply")
     public ResponseEntity<Basket> apply(
             //@ApiParam(value = "Provides the necessary basket and customer information required for the coupon application", required = true)
@@ -61,6 +60,11 @@ public class CouponResource {
         return ResponseEntity.ok().body(basket.get());
     }
 
+    /** * Creates a new coupon based on the provided CouponDTO.
+     *
+     * @param couponDTO The data transfer object containing the details of the coupon to be created.
+     * @return ResponseEntity containing the location of the newly created coupon if successful, or a bad request status with an error message if the input is invalid.
+     */
     @PostMapping("/create")
     public ResponseEntity<String> create(@RequestBody @Valid final CouponDTO couponDTO) {
 
@@ -75,6 +79,12 @@ public class CouponResource {
         }
     }
 
+    /**
+     * Retrieves a list of coupons based on the provided CouponRequestDTO.
+     *
+     * @param couponRequestDTO The data transfer object containing the details of the coupon request.
+     * @return A list of coupons that match the criteria specified in the CouponRequestDTO.
+     * */
     @PostMapping("/coupons")
     public List<Coupon> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
 

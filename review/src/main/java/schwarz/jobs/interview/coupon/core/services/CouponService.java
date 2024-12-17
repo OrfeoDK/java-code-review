@@ -1,6 +1,5 @@
 package schwarz.jobs.interview.coupon.core.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,7 +42,7 @@ public class CouponService {
 
     public Coupon createCoupon(final CouponDTO couponDTO) {
 
-        Coupon coupon = null;
+        Coupon coupon;
 
         try {
             coupon = Coupon.builder()
