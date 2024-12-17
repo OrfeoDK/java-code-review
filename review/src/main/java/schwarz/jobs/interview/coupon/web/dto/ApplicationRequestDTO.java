@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Data;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.model.Basket;
 
 @Data
 @Builder

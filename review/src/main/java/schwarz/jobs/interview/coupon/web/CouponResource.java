@@ -1,6 +1,7 @@
 package schwarz.jobs.interview.coupon.web;
 
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import schwarz.jobs.interview.coupon.core.domain.Coupon;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.model.Basket;
 import schwarz.jobs.interview.coupon.web.dto.ApplicationRequestDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
@@ -38,36 +40,42 @@ public class CouponResource {
     //@ApiOperation(value = "Applies currently active promotions and coupons from the request to the requested Basket - Version 1")
     @PostMapping(value = "/apply")
     public ResponseEntity<Basket> apply(
-        //@ApiParam(value = "Provides the necessary basket and customer information required for the coupon application", required = true)
-        @RequestBody @Valid final ApplicationRequestDTO applicationRequestDTO) {
+            //@ApiParam(value = "Provides the necessary basket and customer information required for the coupon application", required = true)
+            @RequestBody @Valid final ApplicationRequestDTO applicationRequestDTO) {
 
-        log.info("Applying coupon");
+        log.info("Applying coupon for basket with value {}", applicationRequestDTO.getBasket().getValue());
 
-        final Optional<Basket> basket =
-            couponService.apply(applicationRequestDTO.getBasket(), applicationRequestDTO.getCode());
+        final Optional<Basket> basket = couponService.apply(applicationRequestDTO.getBasket(), applicationRequestDTO.getCode());
 
         if (basket.isEmpty()) {
+            log.warn("Coupon application failed: Coupon not found");
             return ResponseEntity.notFound().build();
         }
 
-        if (!applicationRequestDTO.getBasket().isApplicationSuccessful()) {
+        if (!basket.get().isApplicationSuccessful()) {
+            log.warn("Coupon application failed: Conflict in basket application");
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        log.info("Applied coupon");
-
-        return ResponseEntity.ok().body(applicationRequestDTO.getBasket());
+        log.info("Applied coupon successfully");
+        return ResponseEntity.ok().body(basket.get());
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> create(@RequestBody @Valid final CouponDTO couponDTO) {
+    public ResponseEntity<String> create(@RequestBody @Valid final CouponDTO couponDTO) {
 
-        final Coupon coupon = couponService.createCoupon(couponDTO);
+        try {
+            final Coupon coupon = couponService.createCoupon(couponDTO);
 
-        return ResponseEntity.ok().build();
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(coupon.getId()).toUri();
+
+            return ResponseEntity.created(location).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @GetMapping("/coupons")
+    @PostMapping("/coupons")
     public List<Coupon> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
 
         return couponService.getCoupons(couponRequestDTO);

@@ -1,4 +1,4 @@
-package schwarz.jobs.interview.coupon.core.services.model;
+package schwarz.jobs.interview.coupon.core.model;
 
 import java.math.BigDecimal;
 
@@ -14,12 +14,15 @@ public class Basket {
     @NotNull
     private BigDecimal value;
 
-    private BigDecimal appliedDiscount;
+    private BigDecimal appliedDiscount = BigDecimal.ZERO;
 
     private boolean applicationSuccessful;
 
     public void applyDiscount(final BigDecimal discount) {
-        this.applicationSuccessful = false;
+        if (discount == null){
+            throw new IllegalArgumentException("Discount cannot be null");
+        }
+        this.applicationSuccessful = true;
         this.appliedDiscount = discount;
     }
 

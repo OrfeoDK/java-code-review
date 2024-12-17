@@ -3,13 +3,14 @@ package schwarz.jobs.interview.coupon.core.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import schwarz.jobs.interview.coupon.core.domain.Coupon;
 import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.model.Basket;
 import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
 
@@ -27,19 +28,13 @@ public class CouponService {
 
         return getCoupon(code).map(coupon -> {
 
-            if (basket.getValue().doubleValue() >= 0) {
+            double basketValue = basket.getValue().doubleValue();
 
-                if (basket.getValue().doubleValue() > 0) {
-
-                    basket.applyDiscount(coupon.getDiscount());
-
-                } else if (basket.getValue().doubleValue() == 0) {
-                    return basket;
-                }
-
-            } else {
-                System.out.println("DEBUG: TRIED TO APPLY NEGATIVE DISCOUNT!");
-                throw new RuntimeException("Can't apply negative discounts");
+            if (basketValue < 0) {
+                throw new IllegalArgumentException("Can't apply negative discounts");
+            }
+            else if (basketValue > 0) {
+                basket.applyDiscount(coupon.getDiscount());
             }
 
             return basket;
@@ -52,25 +47,24 @@ public class CouponService {
 
         try {
             coupon = Coupon.builder()
-                .code(couponDTO.getCode().toLowerCase())
-                .discount(couponDTO.getDiscount())
-                .minBasketValue(couponDTO.getMinBasketValue())
-                .build();
+                    .code(couponDTO.getCode().toLowerCase())
+                    .discount(couponDTO.getDiscount())
+                    .minBasketValue(couponDTO.getMinBasketValue())
+                    .build();
 
         } catch (final NullPointerException e) {
-
             // Don't coupon when code is null
+            throw new IllegalArgumentException("Coupon code can't be null");
         }
 
         return couponRepository.save(coupon);
     }
 
     public List<Coupon> getCoupons(final CouponRequestDTO couponRequestDTO) {
-
-        final ArrayList<Coupon> foundCoupons = new ArrayList<>();
-
-        couponRequestDTO.getCodes().forEach(code -> foundCoupons.add(couponRepository.findByCode(code).get()));
-
-        return foundCoupons;
+        return couponRequestDTO.getCodes().stream()
+                .map(couponRepository::findByCode)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 }
